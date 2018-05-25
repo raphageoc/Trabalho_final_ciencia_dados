@@ -6,12 +6,11 @@ import requests
 import geocoder
 import unirest
 
-##################consulta dos cnpjs das despesas#######################
+##################consulta dos cnpjs das despesas####################### where char_length(cpf_cnpj)=14 or char_length(cpf_cnpj)=13
 dados =[]
 
 str_connect=("dbname = 'despesas' user= 'postgres' host= 'localhost' port='5432' password= 'postgres'")
-
-sql = 'select * from empresas where char_length(cpf_cnpj)=13 or char_length(cpf_cnpj)=14'
+sql = 'select * from empresas where char_length(cpf_cnpj)=14'
 try:
         conn = psycopg2.connect(str_connect)
         cur = conn.cursor()
@@ -26,42 +25,58 @@ try:
 except:
         print "I  am unable to connect to the database"
 
+
+
 #################################consultando na receitaws o endereco do cnpj
 
 for i in dados:
-    import unirest
+
+    status = i[2]
     cnpj=i[0]
-    if len(cnpj)==13:
-        cnpj='0'+cnpj
-    print cnpj
+    if status == None and cnpj != None:
+
+        if len(cnpj)==13:
+            cnpj='0'+cnpj
 
 
+        response = unirest.get("https://www.receitaws.com.br/v1/cnpj/%s" % str(cnpj))
+        resposta = response.body
+        try:
+            r_search = str(resposta['status'])
+        except Exception as e:
+            print e
+            pass
 
-response = unirest.get("https://www.receitaws.com.br/v1/cnpj/%i" % cnpj)
-resposta = response.body
+        if r_search == 'ERROR':
 
-if resposta['status'] == 'ERROR':
-    print "cnpj nao encontrado"
+            sql = ("UPDATE empresas SET nome = 'cnpj_n_encontrado' WHERE cpf_cnpj='%s'" % str(cnpj))
+        elif r_search == 'OK':
 
+            rua = resposta['logradouro']
+            numero = resposta['numero']
+            cidade = resposta['municipio']
+            nome = str(resposta['nome']).replace("'"," ")
 
+            endereco = rua + ',' + numero + '-'+ cidade
 
+            ############################geocodificar com google ####################
+            url = 'https://maps.googleapis.com/maps/api/geocode/json'
+            params = {'sensor': 'false', 'key':'AIzaSyC7XvrrhmVlEiCL0vCgIoKRYsKbom99a6E','address': endereco}
+            r = requests.get(url, params=params)
+            results = r.json()['results']
 
-else:
+            if results == []:
+                sql = ("UPDATE empresas SET nome = 'cnpj_n_encontrado' WHERE cpf_cnpj like '%s'" % str(cnpj))
+            else:
+                location = results[0]['geometry']['location']
+                lat = location['lat']
+                long = location['lng']
+                pnt = Point(float(long), float(lat))
+                sql = (("UPDATE empresas SET geom = ST_GeomFromText('POINT(%f %f)',4326), nome='%s' WHERE cpf_cnpj = '%s'") % (float(long),float(lat),nome,str(cnpj)))
 
-    rua = resposta['logradouro']
-    numero = resposta['numero']
-    cidade = resposta['municipio']
-    print resposta
-    endereco = rua + ',' + numero + '-'+ cidade
-    url = 'https://maps.googleapis.com/maps/api/geocode/json'
-    params = {'sensor': 'false', 'key':'AIzaSyC7XvrrhmVlEiCL0vCgIoKRYsKbom99a6E','address': endereco}
-    r = requests.get(url, params=params)
-    results = r.json()['results']
-
-    results = r.json()['results']
-    if results == []:
-        print 'nao foi encotrado'
-    location = results[0]['geometry']['location']
-    print location['lat']
-    print location['lng']
-    pnt = Point(float(lo), float(la))
+        conn = psycopg2.connect(str_connect)
+        cur = conn.cursor()
+        cur.execute(sql)
+        cur.close()
+        conn.commit()
+        conn.close()
