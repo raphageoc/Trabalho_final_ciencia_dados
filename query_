@@ -1,0 +1,9 @@
+﻿-- select count(*) from empresas where nome is not NULL;
+-- select count(*) from empresas where nome is not NULL and nome != 'cnpj_n_encontrado'
+-- select * from empresas where cpf_cnpj= '3608586000160'
+-- select * from empresas where char_length(cpf_cnpj)=14 or char_length(cpf_cnpj)=13 order by nome DESC
+select * from empresas2 where nome is not NULL order by nome;
+-- UPDATE empresas2 SET nome = NULL WHERE nome = 'cnpj_n_encontrado'
+-- select * from empresas order by geom
+-- create table empresas2 as
+-- select distinct cpf_cnpj from despesas where char_length(cpf_cnpj)=13 or char_length(cpf_cnpj)=14;
