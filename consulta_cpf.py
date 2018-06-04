@@ -14,7 +14,7 @@ import unirest
 dados =[]
 
 str_connect=("dbname = 'despesas' user= 'postgres' host= 'localhost' port='5432' password= 'postgres'")
-sql = 'select * from empresas2 '
+sql = 'select * from empresas2 order by cpf_cnpj desc'
 try:
         conn = psycopg2.connect(str_connect)
         cur = conn.cursor()
@@ -48,49 +48,39 @@ for i in dados:
 
             response = unirest.get("https://www.receitaws.com.br/v1/cnpj/%s" % str(cnpj1))
             resposta =  response.body
-            #resposta = smart_unicode(resposta)
-            # resposta = json.dumps(smart_unicode(resposta))
-            #resposta = json.loads(resposta)
 
+            # resposta = resposta.decode('latin1').encode('latin1')
+            # resposta = json.dumps(resposta)
 
+            print resposta
 
+            rua = resposta['logradouro']
+            numero = resposta['numero']
+            cidade = resposta['municipio']
+            nome = str(resposta['nome']).replace("'"," ")
 
+            endereco = rua + ',' + numero + '-'+ cidade
 
+            ############################geocodificar com google ####################
+            url = 'https://maps.googleapis.com/maps/api/geocode/json'
+            params = {'sensor': 'false', 'key':'AIzaSyC7XvrrhmVlEiCL0vCgIoKRYsKbom99a6E','address': endereco}
+            # AIzaSyCH2CpDbw2_Y2fNZ8kQ4t5_-YzuopAlW_Y
+            # AIzaSyCvroGGooqKgub4fzNxq99W1L8FQsUDzVU
+            # AIzaSyC7XvrrhmVlEiCL0vCgIoKRYsKbom99a6E ja usasda
+            r = requests.get(url, params=params)
+            results = r.json()['results']
+            print results
 
-            r_search = str(resposta['status'])
-
-
-
-
-
-            if r_search == 'ERROR':
-                sql = ""
-                # sql ="" ("UPDATE empresas2 SET nome = 'cnpj_n_encontrado' WHERE cpf_cnpj='%s'" % str(cnpj))
+            if results == []:
+                sql = ("UPDATE empresas2 SET nome = 'cnpj_n_encontrado' WHERE cpf_cnpj like '%s'" % str(cnpj))
+                print 'erro'
             else:
-                rua = resposta['logradouro']
-                numero = resposta['numero']
-                cidade = resposta['municipio']
-                nome = str(resposta['nome']).replace("'"," ")
+                location = results[0]['geometry']['location']
+                lat = location['lat']
+                long = location['lng']
 
-                endereco = rua + ',' + numero + '-'+ cidade
-
-                ############################geocodificar com google ####################
-                url = 'https://maps.googleapis.com/maps/api/geocode/json'
-                params = {'sensor': 'false', 'key':'AIzaSyCH2CpDbw2_Y2fNZ8kQ4t5_-YzuopAlW_Y','address': endereco}
-                # AIzaSyCH2CpDbw2_Y2fNZ8kQ4t5_-YzuopAlW_Y
-                # AIzaSyCvroGGooqKgub4fzNxq99W1L8FQsUDzVU
-                # AIzaSyC7XvrrhmVlEiCL0vCgIoKRYsKbom99a6E ja usasda
-                r = requests.get(url, params=params)
-                results = r.json()['results']
-
-                if results == []:
-                    sql = ("UPDATE empresas2 SET nome = 'cnpj_n_encontrado' WHERE cpf_cnpj like '%s'" % str(cnpj))
-                else:
-                    location = results[0]['geometry']['location']
-                    lat = location['lat']
-                    long = location['lng']
-                    pnt = Point(float(long), float(lat))
-                    sql = (("UPDATE empresas2 SET geom = ST_GeomFromText('POINT(%f %f)',4326), nome='%s' WHERE cpf_cnpj = '%s'") % (float(long),float(lat),nome,str(cnpj)))
+                pnt = Point(float(long), float(lat))
+                sql = (("UPDATE empresas2 SET geom = ST_GeomFromText('POINT(%f %f)',4326), nome='%s' WHERE cpf_cnpj = '%s'") % (float(long),float(lat),nome,str(cnpj)))
 
             conn = psycopg2.connect(str_connect)
             cur = conn.cursor()
