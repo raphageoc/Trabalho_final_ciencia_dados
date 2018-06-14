@@ -1,5 +1,6 @@
-﻿-- select count(*) from empresas where nome is not NULL;
-select count(*) from empresas2 where nome is not NULL and nome != 'cnpj_n_encontrado'
+﻿-- copy despesas FROM '/home/raphael/Downloads/OneDrive-2018-05-17/output/output0.csv' DELIMITER ';' csv;
+-- select count(*) from empresas where nome is not NULL;
+-- select count(*) from empresas2 where nome is not NULL and nome != 'cnpj_n_encontrado'
 -- select * from empresas where cpf_cnpj= '3608586000160'
 -- select * from empresas where char_length(cpf_cnpj)=14 or char_length(cpf_cnpj)=13 order by nome DESC
 -- select * from empresas2 where nome is not NULL order by nome;
@@ -7,3 +8,8 @@ select count(*) from empresas2 where nome is not NULL and nome != 'cnpj_n_encont
 -- select * from empresas order by geom
 -- create table empresas2 as
 -- select distinct cpf_cnpj from despesas where char_length(cpf_cnpj)=13 or char_length(cpf_cnpj)=14;
+update despesas set vl_pago = replace(vl_pago,',','.') 
+update despesas set vl_pago= cast(vl_pago as float) where vl_pago  not like 'NULL'
+-- delete from despesas where vl_total ilike '%273/2016%'
+delete from despesas where vl_pago ilike 'LiquidaÃ§Ã£o de Empenho'
+-- delete from despesas;
