@@ -1,0 +1,9 @@
+pegar max e min do dateSlider
+
+pegar a opcao do select
+
+enviar para o django
+
+fazer a view para pegar os dados e fazer consulta no banco
+
+pegar os dados retornados da view e tratar no javascript

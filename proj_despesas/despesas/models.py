@@ -60,3 +60,11 @@ class Empresas(models.Model):
     class Meta:
         managed = False
         db_table = 'empresas'
+
+class Tema(models.Model):
+    funcao = models.TextField(blank=True, null=True)
+    id = models.IntegerField(primary_key=True)
+
+    class Meta:
+        managed = False
+        db_table = 'tema'

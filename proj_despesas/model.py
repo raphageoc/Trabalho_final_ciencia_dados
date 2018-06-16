@@ -173,6 +173,7 @@ class Empresas(models.Model):
     nome = models.TextField(blank=True, null=True)
     geom = models.GeometryField(srid=0, blank=True, null=True)
     num = models.BigIntegerField(blank=True, null=True)
+    id = models.AutoField()
 
     class Meta:
         managed = False
@@ -225,3 +226,12 @@ class Pagamentos(models.Model):
     class Meta:
         managed = False
         db_table = 'pagamentos'
+
+
+class Tema(models.Model):
+    funcao = models.TextField(blank=True, null=True)
+    id = models.AutoField()
+
+    class Meta:
+        managed = False
+        db_table = 'tema'

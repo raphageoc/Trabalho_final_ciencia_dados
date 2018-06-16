@@ -8,8 +8,30 @@
 -- select * from empresas order by geom
 -- create table empresas2 as
 -- select distinct cpf_cnpj from despesas where char_length(cpf_cnpj)=13 or char_length(cpf_cnpj)=14;
-update despesas set vl_pago = replace(vl_pago,',','.') 
-update despesas set vl_pago= cast(vl_pago as float) where vl_pago  not like 'NULL'
+-- update despesas set vl_pago = replace(vl_pago,',','.') 
+-- update despesas set vl_pago= cast(vl_pago as float) where vl_pago  not like 'NULL'
 -- delete from despesas where vl_total ilike '%273/2016%'
-delete from despesas where vl_pago ilike 'LiquidaÃ§Ã£o de Empenho'
+-- delete from despesas where vl_pago ilike 'LiquidaÃ§Ã£o de Empenho'
 -- delete from despesas;
+-- select SUM(cast(vl_total as float)) from despesas group by cpf_cnpj;
+-- select distinct cast(dt_empenho as date) from despesas ;
+-- delete from despesas where dt_empenho like 'UN '
+select sem_acento(ds_funcao) as a from despesas group by ds_funcao  ;
+select convert(ds_funcao using iso_8859_1_to_utf_8)::text from despesas;
+
+SELECT ds_funcao, convert(convert_to(ds_funcao, 'utf-8'), 'latin-1', 'utf-8')::text from despesas where ds_funcao ilike '"GEST?O AMBIENTAL"';
+SELECT ds_funcao, convert_to(ds_funcao, 'LATIN1')::text from despesas where ds_funcao ilike 'GEST?O AMBIENTAL';
+SELECT ds_funcao,sem_acento(ds_funcao) from despesas where ds_funcao ilike 'GEST?O AMBIENTAL';
+
+SELECT convert( convert_to('ESSENCIAL A JUSTIAA  Ç', 'UNICODE'), 'UNICODE', 'latin1')::text;
+select convert_to('ESSENCIAL A JUSTIAA', 'iso-8859-1' );
+-- CREATE FUNCTION sem_acento(text) RETURNS text AS $$ 
+--     SELECT translate($1,'ÀÁÂÃÄÅĀĂĄÈÉÊËĒĔĖĘĚÌÍÎÏĨĪĮİÒÓÔÕÖØŌŎŐÙÚÛÜŨŪŬŮŰŲàáâãäåāăąèéêëēĕėęěìíîïĩīĭįòóôõöøōŏőùúûüũūŭůųÇçÑñÝýÿĆćĈĉĊċČčĎďĐđĜĝĞğĠġĢģĤĥĦħ', 
+-- 
+-- 'AAAAAAAAAEEEEEEEEEIIIIIIIIOOOOOOOOOUUUUUUUUUUaaaaaaaaaeeeeeeeeeiiiiiiiiooooooooouuuuuuuuuCcNnYyyCcCcCcCcDdDdGgGgGgGgHhHh'); 
+-- $$ 
+-- LANGUAGE sql IMMUTABLE STRICT; 
+
+
+CREATE TABLE tema AS
+SELECT convert_to((ds_funcao), 'utf8')::text from despesas group by ds_funcao;
