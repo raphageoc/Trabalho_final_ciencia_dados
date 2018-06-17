@@ -16,22 +16,33 @@
 -- select SUM(cast(vl_total as float)) from despesas group by cpf_cnpj;
 -- select distinct cast(dt_empenho as date) from despesas ;
 -- delete from despesas where dt_empenho like 'UN '
-select sem_acento(ds_funcao) as a from despesas group by ds_funcao  ;
-select convert(ds_funcao using iso_8859_1_to_utf_8)::text from despesas;
-
-SELECT ds_funcao, convert(convert_to(ds_funcao, 'utf-8'), 'latin-1', 'utf-8')::text from despesas where ds_funcao ilike '"GEST?O AMBIENTAL"';
-SELECT ds_funcao, convert_to(ds_funcao, 'LATIN1')::text from despesas where ds_funcao ilike 'GEST?O AMBIENTAL';
-SELECT ds_funcao,sem_acento(ds_funcao) from despesas where ds_funcao ilike 'GEST?O AMBIENTAL';
-
-SELECT convert( convert_to('ESSENCIAL A JUSTIAA  Ç', 'UNICODE'), 'UNICODE', 'latin1')::text;
-select convert_to('ESSENCIAL A JUSTIAA', 'iso-8859-1' );
--- CREATE FUNCTION sem_acento(text) RETURNS text AS $$ 
---     SELECT translate($1,'ÀÁÂÃÄÅĀĂĄÈÉÊËĒĔĖĘĚÌÍÎÏĨĪĮİÒÓÔÕÖØŌŎŐÙÚÛÜŨŪŬŮŰŲàáâãäåāăąèéêëēĕėęěìíîïĩīĭįòóôõöøōŏőùúûüũūŭůųÇçÑñÝýÿĆćĈĉĊċČčĎďĐđĜĝĞğĠġĢģĤĥĦħ', 
+-- select sem_acento(ds_funcao) as a from despesas group by ds_funcao  ;
+-- select convert(ds_funcao using iso_8859_1_to_utf_8)::text from despesas;
 -- 
--- 'AAAAAAAAAEEEEEEEEEIIIIIIIIOOOOOOOOOUUUUUUUUUUaaaaaaaaaeeeeeeeeeiiiiiiiiooooooooouuuuuuuuuCcNnYyyCcCcCcCcDdDdGgGgGgGgHhHh'); 
--- $$ 
--- LANGUAGE sql IMMUTABLE STRICT; 
+-- SELECT ds_funcao, convert(convert_to(ds_funcao, 'utf-8'), 'latin-1', 'utf-8')::text from despesas where ds_funcao ilike '"GEST?O AMBIENTAL"';
+-- SELECT ds_funcao, convert_to(ds_funcao, 'LATIN1')::text from despesas where ds_funcao ilike 'GEST?O AMBIENTAL';
+-- SELECT ds_funcao,sem_acento(ds_funcao) from despesas where ds_funcao ilike 'GEST?O AMBIENTAL';
+-- 
+-- SELECT convert( convert_to('ESSENCIAL A JUSTIAA  Ç', 'UNICODE'), 'UNICODE', 'latin1')::text;
+-- select convert_to('ESSENCIAL A JUSTIAA', 'iso-8859-1' );
+-- -- CREATE FUNCTION sem_acento(text) RETURNS text AS $$ 
+-- --     SELECT translate($1,'ÀÁÂÃÄÅĀĂĄÈÉÊËĒĔĖĘĚÌÍÎÏĨĪĮİÒÓÔÕÖØŌŎŐÙÚÛÜŨŪŬŮŰŲàáâãäåāăąèéêëēĕėęěìíîïĩīĭįòóôõöøōŏőùúûüũūŭůųÇçÑñÝýÿĆćĈĉĊċČčĎďĐđĜĝĞğĠġĢģĤĥĦħ', 
+-- -- 
+-- -- 'AAAAAAAAAEEEEEEEEEIIIIIIIIOOOOOOOOOUUUUUUUUUUaaaaaaaaaeeeeeeeeeiiiiiiiiooooooooouuuuuuuuuCcNnYyyCcCcCcCcDdDdGgGgGgGgHhHh'); 
+-- -- $$ 
+-- -- LANGUAGE sql IMMUTABLE STRICT; 
+-- DROP TABLE tema
+-- -- 
+-- CREATE TABLE tema AS
+-- SELECT distinct ds_funcao as funcao from despesas;
+-- -- 
+-- -- 
+-- create table despesas2 as
+-- select * from despesas where geom is not null
 
+-- update despesas set data = cast(dt_empenho as date)
+-- update tema set funcao = sem_acento(funcao)
 
-CREATE TABLE tema AS
-SELECT convert_to((ds_funcao), 'utf8')::text from despesas group by ds_funcao;
+-- update despesas set nome_empresa = empresas.nome, geom = empresas.geom from empresas where despesas.cpf_cnpj=empresas.cpf_cnpj
+--  update despesas set funcao = convert_to((ds_funcao), 'utf8')::text
+-- select distinct ds_funcao from despesas

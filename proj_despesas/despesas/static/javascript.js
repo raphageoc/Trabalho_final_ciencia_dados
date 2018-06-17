@@ -45,8 +45,12 @@ function trans_data(D){
 function alerta_data (){
 // var dateSliderMax = $("#slider").dateRangeSlider("max");
 var basicValues = $("#slider").dateRangeSlider("values");
+var opcao= document.getElementById("tema").value;
+
 
 alert(trans_data(basicValues.max))
+alert(opcao)
+
 }
 
 
@@ -59,6 +63,7 @@ alert(trans_data(basicValues.max))
    );
  }
 
+
 // instanciar um novo objeto mapa
   var map = L.map("map", {
     center: [-25.45, -49.25],
@@ -69,28 +74,56 @@ alert(trans_data(basicValues.max))
   // adicionar uma camada osm ao map
   var osmColorido = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
+  // adicionar um layer geojson vazio
+  var layer_geojson = L.geoJson();
+
 // funçao para adicionar o geodjson ao mapa
   function add_geojson (f){
     var geo = f;
-    var x = L.geoJSON(geo);
-    x.addTo(map);
+    layer_geojson.clearLayers();
+    layer_geojson.addData(geo);
+
+
+    layer_geojson.addTo(map);
   };
 
   // funcao para adequar  o geojson vindo do django para o leaflet
-   function adequar_geodjson (g){
-     // var foo = ('{{ geo |safe}}');
-     var foo = foo.replace(/u'/g, '\'');
-     foo = foo.replace(/'/g, '\'');
-     foo = foo.replace('""', '"');
-     var Data = JSON.parse( foo );
-
-   }
+//    function adequar_geodjson (g){
+//      // var foo = ('{{ geo |safe}}');
+//      var foo = JSON.stringify(g)
+//      foo = foo.replace(/u'/g, '\'');
+//      foo = foo.replace(/'/g, '\'');
+//      foo = foo.replace('""', '"');
+//
+//      s = foo.replace(/\\n/g, "\\n")
+//                .replace(/\\'/g, "\\'")
+//                .replace(/\\"/g, '\\"')
+//                .replace(/\\&/g, "\\&")
+//                .replace(/\\r/g, "\\r")
+//                .replace(/\\t/g, "\\t")
+//                .replace(/\\b/g, "\\b")
+//                .replace(/\\f/g, "\\f");
+// // remove non-printable and other non-valid JSON chars
+//     s = s.replace(/[\u0000-\u0019]+/g,"");
+//      // var Data = $.dump(s);
+//      var Data = JSON.parse( s );
+//      return Data
+//
+//    }
 
 // funcao ajax para enviar parametros pro python e retornar geojson
- function Consulta_tema_data (tema,data_i, data_f) {
+ function Consulta_tema_data () {
 
-    $.post('mapa', {consulta_tema: tema, d_i:data_inicial, d_f:data_final }, function(data){
+    var basicValues = $("#slider").dateRangeSlider("values");
+    var opcao= document.getElementById("tema").value;
+    var data_inicial = trans_data(basicValues.min);
+    var data_final = trans_data(basicValues.max);
 
+
+
+    $.get('consulta', {consulta_tema: opcao, d_i:data_inicial, d_f:data_final }, function(data){
+      // console.log(adequar_geodjson(data))
+      // add_geojson(adequar_geodjson(data))
       add_geojson(data)
     }
   )

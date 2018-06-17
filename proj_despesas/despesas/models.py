@@ -45,6 +45,12 @@ class Despesas(models.Model):
     vl_anulado = models.TextField(blank=True, null=True)
     vl_pago = models.TextField(blank=True, null=True)
     vl_consignado = models.TextField(blank=True, null=True)
+    data = models.DateField(blank=True, null=True)
+    valor = models.IntegerField(blank=True, null=True)
+    nome_empresa = models.TextField(blank=True, null=True)
+    geom = models.GeometryField(srid=0, blank=True, null=True)
+    funcao = models.TextField(blank=True, null=True)
+    id = models.IntegerField(primary_key=True)
 
     class Meta:
         managed = False
