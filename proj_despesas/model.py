@@ -76,6 +76,17 @@ class AuthUserUserPermissions(models.Model):
         unique_together = (('user', 'permission'),)
 
 
+class Consulta(models.Model):
+    cpf_cnpj = models.TextField(blank=True, null=True)
+    geom = models.GeometryField(srid=0, blank=True, null=True)
+    nome_empresa = models.TextField(blank=True, null=True)
+    sum = models.BigIntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'consulta'
+
+
 class Despesas(models.Model):
     ano_empenho = models.TextField(blank=True, null=True)
     dt_empenho = models.TextField(blank=True, null=True)
@@ -123,10 +134,65 @@ class Despesas(models.Model):
     nome_empresa = models.TextField(blank=True, null=True)
     geom = models.GeometryField(srid=0, blank=True, null=True)
     funcao = models.TextField(blank=True, null=True)
+    id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'despesas'
+
+
+class DespesasQuaseOriginal(models.Model):
+    ano_empenho = models.TextField(blank=True, null=True)
+    dt_empenho = models.TextField(blank=True, null=True)
+    cd_fonte = models.TextField(blank=True, null=True)
+    ds_fonte = models.TextField(blank=True, null=True)
+    cd_funcao = models.TextField(blank=True, null=True)
+    ds_funcao = models.TextField(blank=True, null=True)
+    cd_programa = models.TextField(blank=True, null=True)
+    ds_programa = models.TextField(blank=True, null=True)
+    cd_acao = models.TextField(blank=True, null=True)
+    ds_acao = models.TextField(blank=True, null=True)
+    cd_subelemento = models.TextField(blank=True, null=True)
+    ds_subelemento = models.TextField(blank=True, null=True)
+    cd_orgao = models.TextField(blank=True, null=True)
+    ds_orgao = models.TextField(blank=True, null=True)
+    cd_despesa = models.TextField(blank=True, null=True)
+    ds_despesa = models.TextField(blank=True, null=True)
+    codigo_despesa_grupo = models.TextField(blank=True, null=True)
+    ds_grupo = models.TextField(blank=True, null=True)
+    codigo_despesa_modalidade = models.TextField(blank=True, null=True)
+    ds_modalidade = models.TextField(blank=True, null=True)
+    codigo_despesa_elemento = models.TextField(blank=True, null=True)
+    ds_elemento = models.TextField(blank=True, null=True)
+    cpf_cnpj = models.TextField(blank=True, null=True)
+    nr_empenho = models.TextField(blank=True, null=True)
+    licitacao = models.TextField(blank=True, null=True)
+    vl_empenhado = models.TextField(blank=True, null=True)
+    cd_item = models.TextField(blank=True, null=True)
+    ds_item = models.TextField(blank=True, null=True)
+    ds_unidade = models.TextField(blank=True, null=True)
+    quantidade = models.TextField(blank=True, null=True)
+    vl_preco_unitario = models.TextField(blank=True, null=True)
+    vl_total = models.TextField(blank=True, null=True)
+    protocolosup = models.TextField(blank=True, null=True)
+    dt_transacao = models.TextField(blank=True, null=True)
+    a = models.TextField(blank=True, null=True)
+    b = models.TextField(blank=True, null=True)
+    vl_liquidado = models.TextField(blank=True, null=True)
+    vl_devolvido = models.TextField(blank=True, null=True)
+    vl_anulado = models.TextField(blank=True, null=True)
+    vl_pago = models.TextField(blank=True, null=True)
+    vl_consignado = models.TextField(blank=True, null=True)
+    data = models.DateField(blank=True, null=True)
+    valor = models.IntegerField(blank=True, null=True)
+    nome_empresa = models.TextField(blank=True, null=True)
+    geom = models.GeometryField(srid=0, blank=True, null=True)
+    funcao = models.TextField(blank=True, null=True)
+    id = models.AutoField()
+
+    class Meta:
+        managed = False
+        db_table = 'despesas_quase_original'
 
 
 class DjangoAdminLog(models.Model):

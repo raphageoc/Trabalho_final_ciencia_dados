@@ -74,3 +74,16 @@ class Tema(models.Model):
     class Meta:
         managed = False
         db_table = 'tema'
+
+class Consulta(models.Model):
+    id = models.IntegerField(primary_key=True)
+    cpf_cnpj = models.TextField(blank=True, null=True)
+    geom = models.GeometryField(srid=0, blank=True, null=True)
+    nome_empresa = models.TextField(blank=True, null=True)
+    sum = models.BigIntegerField(blank=True, null=True)
+    max = models.BigIntegerField(blank=True, null=True)
+    min = models.BigIntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'consulta'

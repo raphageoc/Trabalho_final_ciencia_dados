@@ -37,8 +37,8 @@
 -- SELECT distinct ds_funcao as funcao from despesas;
 -- -- 
 -- -- 
--- create table despesas2 as
--- select * from despesas where geom is not null
+ create table consulta as
+ select cpf_cnpj, geom, nome_empresa, sum(valor) from despesas where ds_funcao = 'SAUDE' group by cpf_cnpj, nome_empresa,geom
 
 -- update despesas set data = cast(dt_empenho as date)
 -- update tema set funcao = sem_acento(funcao)
@@ -46,3 +46,5 @@
 -- update despesas set nome_empresa = empresas.nome, geom = empresas.geom from empresas where despesas.cpf_cnpj=empresas.cpf_cnpj
 --  update despesas set funcao = convert_to((ds_funcao), 'utf8')::text
 -- select distinct ds_funcao from despesas
+
+ select * from despesas_quase_original where cpf_cnpj = '11896697000147'

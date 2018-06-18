@@ -29,31 +29,32 @@
 <body >
 
 
-  <header style=" height: 5% ">
-     \dasfasdf
-  </header>
 
-  <main style=" height: 90%">
+  <main style=" height: 100%">
 
     <!-- div container do mapa -->
     <div id="map"   style="height:100%; width:70%; float:left;"  >
         </div>
 
     <!--div para os controles do mapa  -->
-    <div id="control" style="height:100%; width:30%; float:right;" >
+    <div id="control" style="height:100%; width:30%; float:right; background-color: "#C0C0C0";" >
 
     <!-- seletor dos temas a serem represetados -->
-      <select id ='tema'>
+     <h4> Selecione a função da despesa</h4>
+      <select name="salutation" id ='tema' style="font-size: 20px;">
      </select>
 
 
       <!-- div para o slider time  -->
+      <div>
+      <h4> Selecione o intervalo temporal</h4>
      <div id="slider"></div>
+   </div>
      <!--  -->
       <script src="{% static 'javascript.js' %}"> </script>
-
+     <div style="margin: 20px;">
      <input class="ui-button ui-widget ui-corner-all" type="submit" value="Submit" onclick="Consulta_tema_data()" > </input>
-
+     </div>
      </div>
 
 
@@ -68,9 +69,6 @@
   </main>
 
 
-  <footer style="height: 5%">
-    Rodapé
-  </footer>
 
 </body>
 

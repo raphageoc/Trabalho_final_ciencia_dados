@@ -48,8 +48,7 @@ var basicValues = $("#slider").dateRangeSlider("values");
 var opcao= document.getElementById("tema").value;
 
 
-alert(trans_data(basicValues.max))
-alert(opcao)
+
 
 }
 
@@ -75,41 +74,57 @@ alert(opcao)
   var osmColorido = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
   // adicionar um layer geojson vazio
+
   var layer_geojson = L.geoJson();
 
 // funçao para adicionar o geodjson ao mapa
   function add_geojson (f){
+
+
+
+
+    var geojsonMarkerOptions = {
+    radius: 8,
+    fillColor: "#ff7800",
+    color: "#000",
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 0.8
+};
+
     var geo = f;
     layer_geojson.clearLayers();
-    layer_geojson.addData(geo);
+
+    layer_geojson = L.geoJSON(geo, {
+
+		style: function (feature) {
+			return feature.properties && feature.properties.style;
+		},
+    onEachFeature: function (feicao, camada){
+  	    camada.bindTooltip(feicao.properties.nome_empresa +" " +feicao.properties.sum)
+        return L.circleMarker(camada, geojsonMarkerOptions)},
+
+		pointToLayer: function (feature, latlng) {
+      // var r=0;
+      // 	if (Math.ceil(100 * (feature.properties.sum/feature.properties.max) ) <20) { r = Math.ceil(100 * (feature.properties.sum/feature.properties.max)/10};
+      //   if (Math.ceil(100 * (feature.properties.sum/feature.properties.max) ) >=20 && (Math.ceil(100 * (feature.properties.sum/feature.properties.max) ) <65 )) { r = 20};
+      //   if (Math.ceil(100 * (feature.properties.sum/feature.properties.max) ) >=65 && (Math.ceil(100 * (feature.properties.sum/feature.properties.max) ) <101 )) { r = 30};
+			return L.circleMarker(latlng, {
+			radius: Math.ceil(100 * (feature.properties.sum/feature.properties.max))/5,
+				fillColor: "#ff7800",
+				color: "#000",
+				weight: 1,
+				opacity: 1,
+				fillOpacity: 0.8
+			});
+		}
+	}).addTo(map);
+   map.fitBounds(layer_geojson.getBounds());
 
 
-    layer_geojson.addTo(map);
   };
+// PEGAR MAXIMO E MINIMO JSON
 
-  // funcao para adequar  o geojson vindo do django para o leaflet
-//    function adequar_geodjson (g){
-//      // var foo = ('{{ geo |safe}}');
-//      var foo = JSON.stringify(g)
-//      foo = foo.replace(/u'/g, '\'');
-//      foo = foo.replace(/'/g, '\'');
-//      foo = foo.replace('""', '"');
-//
-//      s = foo.replace(/\\n/g, "\\n")
-//                .replace(/\\'/g, "\\'")
-//                .replace(/\\"/g, '\\"')
-//                .replace(/\\&/g, "\\&")
-//                .replace(/\\r/g, "\\r")
-//                .replace(/\\t/g, "\\t")
-//                .replace(/\\b/g, "\\b")
-//                .replace(/\\f/g, "\\f");
-// // remove non-printable and other non-valid JSON chars
-//     s = s.replace(/[\u0000-\u0019]+/g,"");
-//      // var Data = $.dump(s);
-//      var Data = JSON.parse( s );
-//      return Data
-//
-//    }
 
 // funcao ajax para enviar parametros pro python e retornar geojson
  function Consulta_tema_data () {
@@ -122,8 +137,7 @@ alert(opcao)
 
 
     $.get('consulta', {consulta_tema: opcao, d_i:data_inicial, d_f:data_final }, function(data){
-      // console.log(adequar_geodjson(data))
-      // add_geojson(adequar_geodjson(data))
+
       add_geojson(data)
     }
   )
